@@ -45,6 +45,7 @@ add_custom_target(condition-cpp.header SOURCES condition-cpp.hh)
 # target can be used to depend on the documentation being built.
 configure_file(Doxyfile.in Doxyfile @ONLY)
 add_custom_command(OUTPUT doc
+  COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/doc/html
   COMMAND doxygen ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
   DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile condition-cpp.hh
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
