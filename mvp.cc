@@ -24,7 +24,7 @@ struct lambdas_for : public handler_for<Conditions>... {
   };*/
 
 int main() {
-  fn_for<some_condition> o([] (auto) {
+  fn_for<some_condition> o([] (some_condition) {
                              std::cout << "not printed" << std::endl;
                            });
   fn_for<some_condition> a([] (some_condition) {
@@ -53,7 +53,7 @@ int main() {
                              std::cout << "Hm .. that's bad" << std::endl;
                              assert(false);
                            });
-  fn_for<some_condition> b([] (auto) {
+  fn_for<some_condition> b([] (some_condition) {
                              std::cout << "This handler does nothing"
                                        << std::endl;
                            });
@@ -61,9 +61,9 @@ int main() {
                          with_restart<warn>([]() {
                                               foo();
                                             },
-                           [](auto) {
+                           [](warn) {
                              std::cout << "WARNING" << std::endl;
                            });
                        },
-    [](auto) { /* do nothing */ });
+    [](ignore) { /* do nothing */ });
 }
