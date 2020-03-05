@@ -166,6 +166,19 @@ namespace condition {
 
 
 
+  template<typename Restart, typename Code, typename RestartCode>
+  auto with_restart(Code && code, RestartCode && restart) {
+    try {
+      register_restart<Restart> reg;
+      return code();
+    } catch (Restart const & r) {
+      return restart(r);
+    }
+  }
+
+
+
+
 }
 
 

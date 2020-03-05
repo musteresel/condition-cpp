@@ -46,12 +46,8 @@ int main() {
                              std::cout << "This handler does nothing"
                                        << std::endl;
                            });
-  try {
-    register_restart<warn> restarts;
-    register_restart<ignore> restarts2;
-    foo();
-  } catch (ignore const &) {
-  } catch (warn const &) {
-    std::cout << "WARNING" << std::endl;
-  }
+  with_restart<warn>([]() { foo(); },
+                     [](auto) {
+                       std::cout << "WARNING" << std::endl;
+                     });
 }
