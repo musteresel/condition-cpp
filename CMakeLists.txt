@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 3.10)
-project(condition-cpp CXX)
+project(condition-cpp
+  VERSION 0.1.0
+  DESCRIPTION "A lightweight condition system for C++"
+  HOMEPAGE_URL "https://github.com/musteresel/condition-cpp"
+  LANGUAGES CXX)
 
 
 # condition-cpp is a header only library.  This is best represented in
