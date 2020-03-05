@@ -218,7 +218,7 @@ namespace condition {
 
 
   template<typename Restart, typename Code, typename RestartCode>
-  auto with_restart(Code && code, RestartCode && restart) {
+  auto with_restart(Code && code, RestartCode && restart) -> decltype(code()) {
     try {
       register_restart<Restart> reg;
       return code();
