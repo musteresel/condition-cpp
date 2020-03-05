@@ -1,5 +1,20 @@
-#ifndef CONDITION_PLUS_PLUS_HEADER
-#define CONDITION_PLUS_PLUS_HEADER 1
+/// \file condition-cpp.hh
+/// \brief A lightweight condition system for C++, inspired by Common Lisp
+///
+/// This header file contains the code for a lightweight condition
+/// system for C++.  Its design is inspired by the condition system
+/// which is part of the Common Lisp language.  C++ exceptions divide
+/// control flow in two parts: One throwing an exception and one
+/// catching it and handling it.  This condition system divides
+/// control flow in three parts: One signaling a condition, one
+/// providing a way to handle it and one deciding whether / how to
+/// handle it.  This makes it possible for high level code to decide
+/// on a way to handle a condition which was signaled in low level
+/// code without knowing *how* to actually handle it, because that was
+/// provided by mid level code.
+///
+#ifndef CONDITION_CPP_HEADER
+#define CONDITION_CPP_HEADER 1
 
 
 
@@ -32,14 +47,31 @@ namespace condition {
 
 
 
+    /// \brief Base class for all handlers, takes care of handler registry.
+    ///
+    /// This is the base class from which all condition handlers
+    /// derive.  It's main purpose is to take care of the registry of
+    /// currently installed handlers.
+    ///
     struct base_handler {
 
 
+      /// \brief Construction of a handler automatically registers it
+      /// with the handler registry.
+      ///
       base_handler() {
         handler_register().push_back(this);
       }
 
 
+      /// \brief Destruction of a handler removes it from the handler
+      /// registry.
+      ///
+      /// \internal
+      ///
+      /// The destructor is `virtual` in order to allow down casts to
+      /// derving handler classes.
+      ///
       virtual ~base_handler() {
         assert(handler_register().size() > 0);
         assert(handler_register().back() == this);
@@ -49,14 +81,27 @@ namespace condition {
 
 
 
+    /// \brief Base class for all restart markers.
+    ///
+    /// A restart can be any user defined type, but in order to
+    /// register possible restarts there has to be a type hierarchy.
+    /// This class is the root of that hierarchy.
+    ///
     struct base_restart {
 
 
+      /// \brief Construction of a restart marker automatically
+      /// registers the restart in the registry of currently installed
+      /// restarts.
+      ///
       base_restart() {
         restart_register().push_back(this);
       }
 
 
+      /// \brief Destruction of the restart marker removes it from the
+      /// registry of currently installed restarts.
+      ///
       virtual ~base_restart() {
         assert(restart_register().size() > 0);
         assert(restart_register().back() == this);
@@ -67,6 +112,9 @@ namespace condition {
 
 
 
+    /// \brief Gives access to the thread local static handler
+    /// registry.
+    ///
     inline std::vector<base_handler *> & handler_register() {
       static thread_local std::vector<base_handler *> handlers;
       return handlers;
@@ -75,6 +123,9 @@ namespace condition {
 
 
 
+    /// \brief Gives access to the thread local static restart
+    /// registry.
+    ///
     inline std::vector<base_restart *> & restart_register() {
       static thread_local std::vector<base_restart *> restarts;
       return restarts;
@@ -184,4 +235,4 @@ namespace condition {
 
 
 
-#endif // CONDITION_PLUS_PLUS_HEADER
+#endif // CONDITION_CPP_HEADER
