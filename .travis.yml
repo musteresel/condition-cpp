@@ -13,11 +13,8 @@ script:
   - echo $TRAVIS_BUILD_DIR
   - cd "$TRAVIS_BUILD_DIR"
   - git clone --branch v2.11.1 --depth 1 https://github.com/catchorg/Catch2.git
-  - cd Catch2
-  - cmake -Bbuild -H. -DBUILD_TESTING=OFF
-  - DESTDIR=installed cmake --build build/ --target install
-  - cd ..
-  - mkdir the-build && cd the-build
-  - cmake .. "-DCatch2_DIR=$TRAVIS_BUILD_DIR/Catch2/build/installed" -DSEARCH_CATCH2=yes
-  - cmake --build .
-  - ctest
+  - cmake -Bcatch2-build -HCatch2 -DBUILD_TESTING=OFF -DCATCH_INSTALL_DOCS=OFF
+  - DESTDIR=inst cmake --build catch2-build/ --target install
+  - cmake -Bthe-build -H. "-DCatch2_DIR=$TRAVIS_BUILD_DIR/catch2-build/inst" -DSEARCH_CATCH2=yes
+  - cmake --build the-build/
+  - cd the-build && ctest
