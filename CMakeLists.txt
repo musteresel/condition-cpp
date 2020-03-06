@@ -117,6 +117,21 @@ include(CPack)
 # register the tests with ctest.
 include(CTest)
 if (BUILD_TESTING)
+  # This is for Travis CI: Catch2 is built from its own git repo, and
+  # "installed" to a DESTDIR.  The issue is: Searching for the correct
+  # path (system independent) is really hard!  But CMake can do this
+  # with GLOB_RECURSE:
+  if (SEARCH_CATCH2)
+    message(STATUS "Searching for Catch2 now!")
+    if (NOT Catch2_DIR)
+      message(FATAL_ERROR "Specify Catch2_DIR as search starting point!")
+    endif()
+    file(GLOB_RECURSE p ${Catch2_DIR}/*/Catch2Config.cmake)
+    list(GET p 0 p)
+    get_filename_component(p ${p} DIRECTORY)
+    message(STATUS "Catch2 there?: \"${p}\"")
+    list(APPEND CMAKE_PREFIX_PATH "${p}")
+  endif()
   find_package(Catch2 REQUIRED)
   include(Catch)
 

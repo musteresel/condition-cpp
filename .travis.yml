@@ -11,7 +11,13 @@ jobs:
 
 script:
   - echo $TRAVIS_BUILD_DIR
-  - cd $TRAVIS_BUILD_DIR
+  - cd "$TRAVIS_BUILD_DIR"
+  - git clone --branch v2.11.1 --depth 1 https://github.com/catchorg/Catch2.git
+  - cd Catch2
+  - cmake -Bbuild -H. -DBUILD_TESTING=OFF
+  - DESTDIR=installed cmake --build build/ --target install
+  - cd ..
   - mkdir the-build && cd the-build
-  - cmake ..
+  - cmake .. "-DCatch2_DIR=$TRAVIS_BUILD_DIR/Catch2/build/installed" -DSEARCH_CATCH2=yes
   - cmake --build .
+  - ctest
