@@ -1,4 +1,4 @@
-# condition-cpp
+# condition-cpp [![Build Status](https://travis-ci.com/musteresel/condition-cpp.svg?branch=master)](https://travis-ci.com/musteresel/condition-cpp)
 
 *A lightweight condition system for C++, inspired by Common Lisp.*
 
