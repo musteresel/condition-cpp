@@ -1,0 +1,17 @@
+language: cpp
+
+jobs:
+  include:
+    - os: linux
+      compiler: gcc
+    - os: linux
+      compiler: clang
+    - os: osx
+    - os: windows
+
+script:
+  - echo $TRAVIS_BUILD_DIR
+  - cd $TRAVIS_BUILD_DIR
+  - mkdir the-build && cd the-build
+  - cmake ..
+  - cmake --build .
