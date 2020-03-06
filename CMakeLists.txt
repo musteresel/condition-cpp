@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
+message(STATUS "CMake version: ${CMAKE_VERSION}")
 project(condition-cpp
   VERSION 0.1.0
   DESCRIPTION "A lightweight condition system for C++"
@@ -16,7 +17,10 @@ project(condition-cpp
 # against condition-cpp use the correct include path (different for
 # build and install time).
 add_library(condition-cpp INTERFACE)
-set_target_properties(condition-cpp PROPERTIES PUBLIC_HEADER condition-cpp.hh)
+if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.15.0")
+  set_target_properties(condition-cpp PROPERTIES
+    PUBLIC_HEADER condition-cpp.hh)
+endif()
 target_include_directories(condition-cpp INTERFACE
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
   $<INSTALL_INTERFACE:include>)
@@ -29,6 +33,9 @@ target_include_directories(condition-cpp INTERFACE
 install(TARGETS condition-cpp
   EXPORT condition-cpp-export
   PUBLIC_HEADER DESTINATION include)
+if (${CMAKE_VERSION} VERSION_LESS "3.15.0")
+  install(FILES condition-cpp.hh DESTINATION include)
+endif()
 
 
 # The "export" is what enables find_package(condition-cpp) to work:
