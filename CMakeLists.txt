@@ -106,3 +106,8 @@ else()
   target_compile_options(mvp11 PRIVATE -Wall -Wextra -pedantic -Werror)
   target_compile_options(mvp14 PRIVATE -Wall -Wextra -pedantic -Werror)
 endif()
+
+
+# Simple package everything into a zip archive for now.
+set(CPACK_GENERATOR "ZIP")
+include(CPack)
