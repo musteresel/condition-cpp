@@ -111,3 +111,16 @@ endif()
 # Simple package everything into a zip archive for now.
 set(CPACK_GENERATOR "ZIP")
 include(CPack)
+
+
+# Catch2 based test suite, using its integration with CMake to
+# register the tests with ctest.
+include(CTest)
+if (BUILD_TESTING)
+  find_package(Catch2 REQUIRED)
+  include(Catch)
+
+  add_executable(catch-tests catch-main.cc tests.cc)
+  target_link_libraries(catch-tests Catch2::Catch2)
+  catch_discover_tests(catch-tests)
+endif()
