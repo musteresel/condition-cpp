@@ -4,47 +4,18 @@
 
 ## What is a condition system?
 
-Think exceptions just better :) Exceptions provide a way to move
-control from one point in the code - where the exception is thrown -
-to another point int the code - where the exception is catched and
-handled - via [structured non-local control flow][non-local-c-flow].
-This allows "low level" code (deep in the call stack) to transfer
-control directly up to "higher level" code - for example when some
-error occurs.
-
-~~~
-high level --> mid level --> low level
-  ^                              |
-  |------------------------------|
-       transfer control back up
-         without bothering with
-          the mid level code
-~~~
-
-
-This is a great improvement compared to e.g. moving an error code all
-the way up through each and every "mid level" function:
-
-~~~
-high level --> mid level --> low level
-    ^            |   ^           |
-    |------------|   |-----------|
-      mid level        error code
-      needs to pass    needs to be
-      the error up     passed up
-~~~
-
-A condition system provides even greater flexibility: Low level code
+Think exceptions just better :) In a condition system low level code
 can *signal* a condition which is then *handled* (= deciding *what* to
 do) by high level code.  This transfers control "back down" to mid
-level code to a restart (which knows *how* to do it):
+level code to a restart (which knows *how* to do it, e.g. by calling
+alternative low level code):
 
 ~~~
     high level decided WHAT
-    to do, not let mid level
-    actually do it!
-    |-------------|
-    |             v
+    to do, now let mid level
+    actually do it!            /----> alternative low level
+    |-------------|      /----/
+    |             v     /
 high level --> mid level --> low level
        ^                        |
        |------------------------|
@@ -53,5 +24,64 @@ high level --> mid level --> low level
             with the mid level
 ~~~
 
+As such a condition system is a form of [structured non-local control
+flow][non-local-c-flow] and provides more flexibility than exceptions:
+High level code can basically determine "how far up the call stack" an
+"exception is allowed to be thrown".  In the actual implementation it
+looks more like this:
+
+~~~
+         --> Installs Handler                  --> Installs restart 2
+        /             -> Installs restart 1   /
+       /             /                       /
+high level ------> mid level 1 ----> mid level 2 ---> low level
+                        ^                  ^            |
+                        |                  |            | signals a
+                        |                  |            | condition
+                        |                  |            |
+                        |                  |            v
+                        |         (either) |-----   handler decides
+                        |-----------------------     which restart
+                                                      to use
+~~~
+
+## How can I use this?
+
+This is a header only library, so basically all you need is to grab
+the [./condition-cpp.hh][] file and include it in your project.  But
+there's also a CMake based build system, which provides installable
+exports so that you can use `find_package`:
+
+~~~bash
+# clone sources / get archive with sources and unpack
+
+cmake -Bbuild -H. # plus options regarding tests:
+#
+#  -DCatch2_DIR=path_to_catch2_cmake_files
+#
+#  and additionally: -DSEARCH_CATCH=yes to search for Catch2 in
+#  subdirectories of Catch2_DIR
+#
+# Or, if you don't want to run the tests: -DBUILD_TESTING=OFF
+
+cmake --build build/
+cmake --build build/ --target install # for install, or
+cmake --build build/ --target package # to get a zip file
+~~~
+
+If you have Doxygen in your path you'll get html documentation and man
+pages, too.
+
+All in all this is pretty much an alpha state project, and things
+could likely change.  If you have suggestions, then don't hesitate to
+...
+
+## Contribute
+
+With ideas! Criticsm! Examples, Questions, Suggestions.
+
+The best place for this are the [Github issues][gh-issues] for the
+project.
 
 [non-local-c-flow]: https://en.wikipedia.org/wiki/Control_flow#Structured_non-local_control_flow
+[gh-issues]: https://github.com/musteresel/condition-cpp/issues
