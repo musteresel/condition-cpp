@@ -35,3 +35,20 @@ TEST_CASE("Condition does not invoke unrelated handlers, simply returns",
   CHECK(invoked == false);
   CHECK(returned == true);
 }
+
+
+TEST_CASE("Condition invokes handler, returns when no restart called",
+          "[handler][signal]") {
+  struct some_condition {};
+  bool invoked = false;
+  bool returned = false;
+  {
+    fn_for<some_condition> handler([&](some_condition) {
+                                     invoked = true;
+                                   });
+    signal<some_condition>({});
+    returned = true;
+  }
+  CHECK(invoked == true);
+  CHECK(returned == true);
+}
