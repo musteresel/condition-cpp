@@ -3,6 +3,7 @@ include(Catch)
 
 foreach(standard 11 14 17)
   add_library(catch-main-${standard} STATIC catch-main.cc)
+  target_link_libraries(catch-main-${standard} Catch2::Catch2)
   add_executable(catch-tests-${standard} tests.cc)
   set_target_properties(catch-main-${standard} catch-tests-${standard}
     PROPERTIES
