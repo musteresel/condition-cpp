@@ -99,13 +99,16 @@ set_target_properties(mvp14 PROPERTIES
 
 # Last but not least enable as much warnings as possible for all
 # compiling targets.
-if(MSVC)
-  target_compile_options(mvp11 PRIVATE /W4 /WX)
-  target_compile_options(mvp14 PRIVATE /W4 /WX)
-else()
-  target_compile_options(mvp11 PRIVATE -Wall -Wextra -pedantic -Werror)
-  target_compile_options(mvp14 PRIVATE -Wall -Wextra -pedantic -Werror)
-endif()
+function(targets_enable_warnings)
+  foreach(target ${ARGV})
+    if(MSVC)
+      target_compile_options(${target} PRIVATE /W4 /WX)
+    else()
+      target_compile_options(${target} PRIVATE -Wall -Wextra -pedantic -Werror)
+    endif()
+  endforeach()
+endfunction()
+targets_enable_warnings(mvp11 mvp14)
 
 
 # Simple package everything into a zip archive for now.
@@ -132,10 +135,5 @@ if (BUILD_TESTING)
     message(STATUS "Catch2 there?: \"${p}\"")
     list(APPEND CMAKE_PREFIX_PATH "${p}")
   endif()
-  find_package(Catch2 REQUIRED)
-  include(Catch)
-
-  add_executable(catch-tests catch-main.cc tests.cc)
-  target_link_libraries(catch-tests Catch2::Catch2)
-  catch_discover_tests(catch-tests)
+  add_subdirectory(tests)
 endif()
