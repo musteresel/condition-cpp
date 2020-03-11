@@ -48,7 +48,7 @@ high level ------> mid level 1 ----> mid level 2 ---> low level
 ## How can I use this?
 
 This is a header only library, so basically all you need is to grab
-the [./condition-cpp.hh][] file and include it in your project.  But
+the [condition-cpp.hh](./condition-cpp.hh) file and include it in your project.  But
 there's also a CMake based build system, which provides installable
 exports so that you can use `find_package`:
 
